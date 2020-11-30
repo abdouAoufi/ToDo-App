@@ -27,12 +27,12 @@ body {
 }
 
 .light-bg {
-  background: url("/images/bg-desktop-light.jpg");
+  background: url("images/bg-desktop-light.jpg");
 }
 
 @media (max-width: 420px) {
   .light-bg {
-    background: url("/images/bg-mobile-light.jpg");
+    background: url("images/bg-mobile-light.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -40,12 +40,12 @@ body {
 }
 
 .dark-bg {
-  background: url("/images/bg-desktop-dark.jpg");
+  background: url("images/bg-desktop-dark.jpg");
 }
 
 @media (max-width: 420px) {
   .dark-bg {
-    background: url("/images/bg-mobile-dark.jpg");
+    background: url("images/bg-mobile-dark.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
