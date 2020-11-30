@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,
+      initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+
+  <link rel="stylesheet" href="design/style/main.css">
+
+  <title>Frontend Mentor | Todo app</title>
+
+
+</head>
+
+<body>
+
+  <div class="background light-bg">
+
+  </div>
+
+  <section class="hero ">
+    <div class="hero__container">
+      <div class="heading">
+        <strong>TODO</strong>
+        <img class="changeMode" src="images/icon-moon.svg" alt="">
+      </div>
+      <div class="create-note">
+        <div class="check" >
+          <img src="images/icon-check.svg" alt="">
+          </div>
+
+
+        <input type="text" name="" id="" value="Create a new todo">
+      </div>
+
+      <div class="todo-container">
+
+        <div class="saved">
+         <div class="check " >
+          <img src="images/icon-check.svg" alt="">
+          </div>
+          <input type="text" name="" id="" value="My javaScript Corse" disabled>
+          <img class="delete"  src="images/icon-cross.svg" alt="">
+        </div>
+
+
+        <div class="saved">
+            <div class="check " >
+             <img src="images/icon-check.svg" alt="">
+             </div>
+             <input type="text" name="" id="" value="My javaScript Corse" disabled>
+             <img class="delete"  src="images/icon-cross.svg" alt="">
+           </div>
+
+
+
+           <div class="saved">
+              <div class="check " >
+               <img src="images/icon-check.svg" alt="">
+               </div>
+               <input type="text" name="" id="" value="My javaScript Corse" disabled>
+               <img class="delete"  src="images/icon-cross.svg" alt="">
+             </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    const changeModeToggle = $('.changeMode');
+    const deleteIcon = $('.delete');
+    const checked = $('.check');
+    const background = $('.background');
+    let isClicked = false;
+    changeModeToggle.click(clickedToggle);
+    checked.click(clickedCheked);
+
+    function clickedCheked (){
+      $(this).toggleClass('active');
+    }
+
+    function clickedToggle() {
+      $('body').toggleClass('darkmode');
+      $('.create-note').addClass('darkmode');
+      $('.todo-container').addClass('darkmode');
+      checked.toggleClass('check-dark');
+     
+
+      if (!isClicked) {
+        deleteIcon.attr("src", "images/icon-cross.dark.svg");
+        changeModeToggle.attr("src", "images/icon-sun.svg");
+        isClicked = !isClicked;
+        background.addClass('dark-bg');
+      }
+      else{
+        changeModeToggle.attr("src", "images/icon-moon.svg");
+        deleteIcon.attr("src", "images/icon-cross.svg");
+        background.removeClass('dark-bg');
+
+        isClicked = !isClicked;
+      }
+    }
+  </script>
+
+
+</body>
+
+</html>
