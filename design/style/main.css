@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #FFF;
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
 }
 
 * {
@@ -59,10 +59,16 @@ body {
 input {
   outline: none;
   border: none;
-  font-size: 1.0rem;
+  font-size: 1rem;
   font-weight: 550;
   background-color: inherit;
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
+}
+
+@media (max-width: 320px) {
+  input {
+    font-size: 0.8rem;
+  }
 }
 
 .check {
@@ -79,7 +85,7 @@ input {
 }
 
 .hero__container {
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
   padding-top: 5.5rem;
   margin-right: auto;
   margin-left: auto;
@@ -178,20 +184,16 @@ input {
 
 @media (max-width: 420px) {
   .hero__container .todo-container .saved {
-    padding: 1.1rem 0.9rem;
+    padding: 1.1rem 0.5rem;
     -ms-flex-pack: distribute;
         justify-content: space-around;
   }
 }
 
-.hero__container .todo-container .saved input[type=text] {
+.hero__container .todo-container .saved input[type="text"] {
   -webkit-box-flex: 2;
       -ms-flex: 2;
           flex: 2;
-}
-
-.hero__container .todo-container .saved .check {
-  margin-right: 1rem;
 }
 
 .hero__container .todo-container .saved img {
@@ -225,13 +227,19 @@ input {
 }
 
 .moon .changeMode {
-  src: '/images/icon-sun.svg';
+  src: "/images/icon-sun.svg";
+}
+
+.delete {
+  width: 1rem;
+  height: 1rem;
+  padding: 1px;
 }
 
 .check {
   margin-right: 1rem;
-  width: 20px;
-  height: 20px;
+  width: 1rem;
+  height: 1rem;
   padding: 3px;
   place-items: center;
   display: -ms-grid;
@@ -239,6 +247,12 @@ input {
   border-radius: 50%;
   border: 1px solid #c4c4c4;
   cursor: pointer;
+}
+
+@media (max-width: 320px) {
+  .check {
+    margin-right: 3px;
+  }
 }
 
 .check img {
