@@ -261,7 +261,7 @@
     class DataManip {
       constructor(_text) {
         this.text = _text;
-        this.id = parseInt(new Date().getTime());
+        this.id = Math.random() * Math.floor(100);
       }
       saveNote() {
         return new Note(this.id, this.text);
