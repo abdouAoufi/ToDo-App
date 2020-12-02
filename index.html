@@ -1,121 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
       initial-scale=1.0"> <!-- displays site properly based on user's device -->
-  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+      href="./images/favicon-32x32.png">
 
-  <link rel="stylesheet" href="design/style/main.css">
+    <link rel="stylesheet" href="design/style/main.css">
 
-  <title>Frontend Mentor | Todo app</title>
+    <title>Frontend Mentor | Todo app</title>
 
 
-</head>
+  </head>
 
-<body>
+  <body>
 
-  <div class="background light-bg">
+    <div class="background light-bg">
 
-  </div>
+    </div>
 
-  <section class="hero">
-    <div class="hero__container">
-      <div class="heading">
-        <strong>TODO</strong>
-        <img class="changeMode" src="images/icon-moon.svg" alt="">
-      </div>
-      <div class="create-note">
-        <div class="check">
-          <img src="images/icon-check.svg" alt="">
+    <section class="hero">
+      <div class="hero__container">
+        <div class="heading">
+          <strong>TODO</strong>
+          <img class="changeMode" src="images/icon-moon.svg" alt="">
         </div>
-        <input type="text" name="" id="" value="Create a new todo">
-      </div>
-
-      <div class="todo-container">
-
-        <div class="saved">
-          <div class="check">
+        <div class="create-note">
+          <div class="done" id="saveNote">
             <img src="images/icon-check.svg" alt="">
           </div>
-          <input type="text" name="" id="" value="My javaScript  Corse" disabled>
-          <div class="delete " src="images/icon-cross.svg" alt="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-              <path fill="#494C6B" fill-rule="evenodd"
-                d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z" />
-              </svg>
+          <input type="text" name="" id="entry" placeholder="Tape here to create">
+        </div>
+
+        <div class="todo-container">
+          <p id="no-note">No notes for now</p>
+
+          <div class="data">
+
+          </div>
+          <div class="lines">
+            <a href="#" disabled id="left">Empty list</a>
+            <div class="selection">
+              <a href="#" class="ALL">All</a>
+              <a href="#" class="ACTIVE">Active</a>
+              <a href="#" class="COMPLETE">Complete</a>
+            </div>
+            <a href="#" class="DELETALL">Clear all</a>
           </div>
         </div>
 
+        <div class="selection-mobile">
+          <a href="#" class="ALL">All</a>
+          <a href="#" class="ACTIVE">Active</a>
+          <a href="#" class="COMPLETE">Complete</a>
+        </div>
+
       </div>
-    </div>
-  </section>
+    </section>
 
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script>
-    const changeModeToggle = $('.changeMode');
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
     let deleteIcon = $('.todo-container').find('.delete');
-    const checked = $('.check');
-    const background = $('.background');
-    const noteContainer = $('.todo-container');
+    let checked = $('.check');
     let isClicked = false;
+    let itemAdded = false;
+    let itemAddedCmp = false;
+    let itemLeft = 10;
+     
 
+    const changeModeToggle = $('.changeMode');
+    const background = $('.background');
+    const noteContainer = $('.data');
+    const control = $('.lines');
+    const done = $('#saveNote');
+    const noNote  = $('#no-note');
     const lightDelete = "images/icon-check.svg";
     const darkDelete = "images/icon-cross.dark.svg";
+    const entry = $('#entry');
+    const ALLTASKS = $(".ALL");
+    const ACTIVETASKS = $(".ACTIVE");
+    const COMPLETDTASKS = $(".COMPLETE");
+    const DELETALL = $(".DELETALL");
+    let allNotes = new Map();
+    let DoneNotes = new Map();
+    let ActiveNote = new Map();
 
-    // addNewNote();
+    class UI {
+      clickedToggle() {
+        $('body').toggleClass('darkmode');
+        $('.create-note').addClass('darkmode');
+        $('.todo-container').addClass('darkmode');
+        control.css({
+          "background-color": "#3d4b6b",
+          "color": "#e2f3f5",
+        });
+        $('.selection-mobile').css({
+          "background-color": "#3d4b6b",
+          "color": "#e2f3f5",
+        });
 
-    $(document).ready(ready);
+        if (!isClicked) {
+          changeModeToggle.attr("src", "images/icon-sun.svg");
+          background.addClass('dark-bg');
+          isClicked = !isClicked;
+          $('#no-note').css({
+            "color": "white"
+          });
+        } else {
+          deleteIcon.removeClass('dark-delete');
+          changeModeToggle.attr("src", "images/icon-moon.svg");
+          background.removeClass('dark-bg');
+          control.css({
+            "background-color": "#FFF",
+            "color": "#262626",
+          });
 
-    function ready() {
-      changeModeToggle.click(clickedToggle);
-      checked.click(clickedCheked);
+
+          $('.selection-mobile').css({
+            "background-color": "#FFF",
+            "color": "#262626",
+          });
+          $('#no-note').css({
+            "color": "#7a49af"
+          });
+
+          isClicked = !isClicked;
+        }
+      }
+      setSearchToDefault() {
+        entry.val("");
+      }
+      clearNotes() {
+        noteContainer.html("");
+      }
+
+      addNote(note){
+        let nota = `   <div class="saved" id="${note.id}">
+              <div class="check check-cont" >
+                <img src="images/icon-check.svg" alt="">
+              </div>
+              <p class="content ">${note.text}</p>
+                <div class="delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                    height="18">
+                    <path fill="#494C6B" fill-rule="evenodd"
+                     d="M16.97 0l.708.707L9.546 8.84l8.132
+                      8.132-.707.707-8.132-8.132-8.132 8.132L0
+                      16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"
+                      />
+                  </svg>
+                  </div>
+                </div>
+         `;
+      noteContainer.append(nota);
+      $('.check').on("click" , function(){
+        let id = parseInt($(this).parent().attr("id"),10);
+        DoneNotes.set(id , allNotes.get(id));
+      });
+      $('.delete').on("click" , function(){
+        let id = parseInt($(this).parent().attr("id"),10);
+        allNotes.delete(id);
+        DoneNotes.delete(id);
+        $(this).parent().remove();
+      })
+      console.log(allNotes.size);
+      
+      } // END OF METHOD 
+      completTask(e){
+        console.log(e);
+      }
+     
+      DisplayMultieNotes(value , key){
+        let nota ;
+        if(!value.isCHecked){
+           nota = `   <div class="saved" id="${key} style="background:#EEE">
+              <div class="check checkALL check-cont" >
+                <img src="images/icon-check.svg" alt="">
+              </div>
+              <p class="content ">${value.text}</p>
+                <div class="delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                    height="18">
+                    <path fill="#494C6B" fill-rule="evenodd"
+                     d="M16.97 0l.708.707L9.546 8.84l8.132
+                      8.132-.707.707-8.132-8.132-8.132 8.132L0
+                      16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"
+                      />
+                  </svg>
+                  </div>
+                </div>
+         `;
+        }else{
+          if(value.isCHecked){
+           nota = `   <div class="saved" id="${key} style="background:#EEE">
+            <div class="check  check-cont cont active" >
+                <img src="images/icon-check.svg" alt="">
+              </div>
+              <p class="content line-through">${value.text}</p>
+                <div class="delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                    height="18">
+                    <path fill="#494C6B" fill-rule="evenodd"
+                     d="M16.97 0l.708.707L9.546 8.84l8.132
+                      8.132-.707.707-8.132-8.132-8.132 8.132L0
+                      16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"
+                      />
+                  </svg>
+                  </div>
+                </div>
+         `;
+        }
+        }
+        
+      noteContainer.append(nota);
+      console.log(allNotes.size);
+      
+      $('.check').on("click" , function(){
+        $(this).next().toggleClass('line-through');
+        let id = parseInt($(this).parent().attr("id"),10);
+        $(this).addClass('active');
+        value.isCHecked = true;
+        DoneNotes.set(id , value);
+        ActiveNote.delete(id);
+        itemLeft = ActiveNote.size ;
+        $('#left').html(`${itemLeft} item left `);
+      });
+      $('.delete').on("click" , function(){
+        let id = parseInt($(this).parent().attr("id"),10);
+        allNotes.delete(id);
+        DoneNotes.delete(id);
+        ActiveNote.delete(id);
+        $(this).parent().remove();
+        if(allNotes.size == 0){
+          noNote.html("Type above to add task");
+          noNote.show();
+        }
+        itemLeft = ActiveNote.size ;
+        $('#left').html(`${itemLeft} item left `)
+      });
+     
+      }
+
+    
+
+      ClearALLNotes(){
+      noteContainer.html("");
+      }
+
+      empty(){
+        entry.val("");
+      }
+    } // END OF CLASS
+
+
+
+    class DataManip {
+      constructor(_text) {
+        this.text = _text;
+        this.id = parseInt(new Date().getTime());
+      }
+      saveNote() {
+        return new Note(this.id, this.text);
+      }
 
     }
 
-    function clickedCheked() {
-      $(this).toggleClass('active');
-      addNewNote();
-    }
-
-    function addNewNote() {
-      let note = ` <div class="saved">
-          <div class="check">
-            <img src="images/icon-check.svg" alt="">
-          </div>
-          <input type="text" name="" id="" value="My javaScript  Corse" disabled>
-          <div class="delete " src="images/icon-cross.svg" alt="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-              <path fill="#494C6B" fill-rule="evenodd"
-                d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z" />
-              </svg>
-          </div>
-        </div>`;
-      noteContainer.append(note);
-     deleteIcon = $('.todo-container').find('.delete');
-    }
-
-    function clickedToggle() {
-      $('body').toggleClass('darkmode');
-      $('.create-note').addClass('darkmode');
-      $('.todo-container').addClass('darkmode');
-      checked.toggleClass('check-dark');
-
-      if (!isClicked) {
-        deleteIcon.addClass('dark-delete');
-        changeModeToggle.attr("src", "images/icon-sun.svg");
-        isClicked = !isClicked;
-        background.addClass('dark-bg');
-      } else {
-        deleteIcon.removeClass('dark-delete');
-        changeModeToggle.attr("src", "images/icon-moon.svg");
-        background.removeClass('dark-bg');
-        isClicked = !isClicked;
+    class Note {
+      constructor(_id, _text) {
+        this.id = _id;
+        this.text = _text;
+        this.isCHecked = false ;
+      }
+      deleteNoteText() {
+        this.text = "";
       }
     }
+
+
+
+
+    function getTarget(index) {
+      return allNotes[index];
+    }
+
+    function isEmpty(str) {
+    return (!str || 0 === str.length);
+   }
+
+    $(document).ready(function () {
+      let ui = new UI();
+      done.click(function(){
+        let texto = entry.val();
+        if(!isEmpty(texto)){
+          let data = new DataManip(texto);
+        let Currrentnote = data.saveNote();
+        allNotes.set(Currrentnote.id , {text : Currrentnote.text, isckecked : Currrentnote.isCHecked});
+        ActiveNote.set(Currrentnote.id , {text : Currrentnote.text, isckecked : Currrentnote.isCHecked});
+        ui.ClearALLNotes();
+        noNote.hide();
+        if(allNotes.size < 10){
+          allNotes.forEach(function (value , key , checked){
+          ui.DisplayMultieNotes(value, key);
+          ui.empty();
+          itemLeft = ActiveNote.size ;
+        $('#left').html(`${itemLeft} item left `);
+        data=null;
+        });
+        }else{
+          alert();
+        }
+        }
+        
+      })
+      changeModeToggle.click(function () {
+        ui.clickedToggle();
+      });
+
+      ALLTASKS.click(function(){
+        if(allNotes.size > 0 ){
+          noNote.hide();
+          ui.ClearALLNotes();
+          allNotes.forEach(function (value , key , checked){
+          ui.DisplayMultieNotes(value, key);
+        });
+        }else{
+          noNote.html("Type above to add task");
+          noNote.show();
+          ui.clearNotes();
+        }
+      });
+
+      
+      COMPLETDTASKS.click(function(){
+        if(DoneNotes.size > 0 ){
+          noNote.hide();
+          ui.ClearALLNotes();
+          DoneNotes.forEach(function (value , key){
+          ui.DisplayMultieNotes(value, key);
+        })
+        }
+        else{
+          noNote.html("you haven't complete any task");
+          noNote.show();
+          ui.clearNotes();
+        }
+       
+      });
+
+
+      ACTIVETASKS.click(function(){
+        if(ActiveNote.size > 0 ){
+          noNote.hide();
+          ui.ClearALLNotes();
+          ActiveNote.forEach(function (value , key){
+          ui.DisplayMultieNotes(value, key);
+        })
+        }
+        else{
+          if(DoneNotes.size > 0){
+            noNote.html("Great Work ");
+          }else{
+            noNote.html("Type above to add task");
+          }
+         
+          noNote.show();
+          ui.clearNotes();
+        }
+      });
+
+      DELETALL.click(function(){
+        ui.clearNotes();
+        noNote.html("No note for now");
+        itemLeft = 10;
+        $('#left').html(`Empty list`)
+        noNote.show();
+        allNotes.clear();
+        DoneNotes.clear();
+        ActiveNote.clear();
+      })
+
+
+    }) // END OF READY
   </script>
-</body>
+  </body>
 
 </html>
