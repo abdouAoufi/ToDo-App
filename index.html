@@ -31,7 +31,8 @@
           <div class="done" id="saveNote">
             <img src="images/icon-check.svg" alt="">
           </div>
-          <input type="text" name="" id="entry" placeholder="Tape here to create">
+          <input type="text" name="" id="entry" placeholder="Tape here
+            to create">
         </div>
 
         <div class="todo-container">
@@ -70,6 +71,7 @@
     let itemAdded = false;
     let itemAddedCmp = false;
     let itemLeft = 10;
+    let index = 0 ;
      
 
     const changeModeToggle = $('.changeMode');
@@ -89,8 +91,8 @@
     let DoneNotes = new Map();
     let ActiveNote = new Map();
 
-    class UI {
-      clickedToggle() {
+     
+    function clickedToggle() {
         $('body').toggleClass('darkmode');
         $('.create-note').addClass('darkmode');
         $('.todo-container').addClass('darkmode');
@@ -131,50 +133,17 @@
           isClicked = !isClicked;
         }
       }
-      setSearchToDefault() {
+      function  setSearchToDefault() {
         entry.val("");
       }
-      clearNotes() {
+      function  clearNotes() {
         noteContainer.html("");
       }
 
-      addNote(note){
-        let nota = `   <div class="saved" id="${note.id}">
-              <div class="check check-cont" >
-                <img src="images/icon-check.svg" alt="">
-              </div>
-              <p class="content ">${note.text}</p>
-                <div class="delete">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                    height="18">
-                    <path fill="#494C6B" fill-rule="evenodd"
-                     d="M16.97 0l.708.707L9.546 8.84l8.132
-                      8.132-.707.707-8.132-8.132-8.132 8.132L0
-                      16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"
-                      />
-                  </svg>
-                  </div>
-                </div>
-         `;
-      noteContainer.append(nota);
-      $('.check').on("click" , function(){
-        let id = parseInt($(this).parent().attr("id"),10);
-        DoneNotes.set(id , allNotes.get(id));
-      });
-      $('.delete').on("click" , function(){
-        let id = parseInt($(this).parent().attr("id"),10);
-        allNotes.delete(id);
-        DoneNotes.delete(id);
-        $(this).parent().remove();
-      })
-      console.log(allNotes.size);
-      
-      } // END OF METHOD 
-      completTask(e){
-        console.log(e);
-      }
+  
+       
      
-      DisplayMultieNotes(value , key){
+      function DisplayMultieNotes(value , key){
         let nota ;
         if(!value.isCHecked){
            nota = `   <div class="saved" id="${key} style="background:#EEE">
@@ -217,14 +186,13 @@
         }
         
       noteContainer.append(nota);
-      console.log(allNotes.size);
       
       $('.check').on("click" , function(){
-        $(this).next().toggleClass('line-through');
+        // $(this).next().toggleClass('line-through');
         let id = parseInt($(this).parent().attr("id"),10);
         $(this).addClass('active');
         value.isCHecked = true;
-        DoneNotes.set(id , value);
+        DoneNotes.set(id , allNotes.get(id));
         ActiveNote.delete(id);
         itemLeft = ActiveNote.size ;
         $('#left').html(`${itemLeft} item left `);
@@ -247,33 +215,33 @@
 
     
 
-      ClearALLNotes(){
+     function ClearALLNotes(){
       noteContainer.html("");
       }
 
-      empty(){
+      function empty(){
         entry.val("");
       }
-    } // END OF CLASS
+     // END OF CLASS
 
 
 
     class DataManip {
       constructor(_text) {
         this.text = _text;
-        this.id = Math.random() * Math.floor(100);
+        this.id = index;
       }
       saveNote() {
-        return new Note(this.id, this.text);
+        return new Note(this.id, this.text , false);
       }
 
     }
 
     class Note {
-      constructor(_id, _text) {
+      constructor(_id, _text , _checked) {
         this.id = _id;
         this.text = _text;
-        this.isCHecked = false ;
+        this.isCHecked = _checked ;
       }
       deleteNoteText() {
         this.text = "";
@@ -282,6 +250,12 @@
 
 
 
+    $("strong").click(function(){
+      console.log("ALL NOTTS ==============" , allNotes.values);
+      console.log("ACTIVE NOTTS ==============" , ActiveNote);
+      console.log("COMPLETES NOTTS ==============" , DoneNotes);
+      
+    })
 
     function getTarget(index) {
       return allNotes[index];
@@ -292,7 +266,6 @@
    }
 
     $(document).ready(function () {
-      let ui = new UI();
       done.click(function(){
         let texto = entry.val();
         if(!isEmpty(texto)){
@@ -300,15 +273,16 @@
         let Currrentnote = data.saveNote();
         allNotes.set(Currrentnote.id , {text : Currrentnote.text, isckecked : Currrentnote.isCHecked});
         ActiveNote.set(Currrentnote.id , {text : Currrentnote.text, isckecked : Currrentnote.isCHecked});
-        ui.ClearALLNotes();
+         ClearALLNotes();
         noNote.hide();
         if(allNotes.size < 10){
-          allNotes.forEach(function (value , key , checked){
-          ui.DisplayMultieNotes(value, key);
-          ui.empty();
+          allNotes.forEach(function (value , key ){
+           DisplayMultieNotes(value, key);
+           empty();
           itemLeft = ActiveNote.size ;
         $('#left').html(`${itemLeft} item left `);
         data=null;
+        index++;
         });
         }else{
           alert();
@@ -317,36 +291,41 @@
         
       })
       changeModeToggle.click(function () {
-        ui.clickedToggle();
+         clickedToggle();
       });
 
       ALLTASKS.click(function(){
-        if(allNotes.size > 0 ){
+     
+         
           noNote.hide();
-          ui.ClearALLNotes();
-          allNotes.forEach(function (value , key , checked){
-          ui.DisplayMultieNotes(value, key);
+           ClearALLNotes();
+          DoneNotes.forEach(function (value , key){
+           DisplayMultieNotes(value, key);
         });
-        }else{
-          noNote.html("Type above to add task");
-          noNote.show();
-          ui.clearNotes();
-        }
+        ActiveNote.forEach(function (value , key){
+           DisplayMultieNotes(value, key);
+        })
+       
+        // else{
+        //   noNote.html("you haven't complete any task");
+        //   noNote.show();
+        //    clearNotes();
+        // }
       });
 
       
       COMPLETDTASKS.click(function(){
         if(DoneNotes.size > 0 ){
           noNote.hide();
-          ui.ClearALLNotes();
+           ClearALLNotes();
           DoneNotes.forEach(function (value , key){
-          ui.DisplayMultieNotes(value, key);
+           DisplayMultieNotes(value, key);
         })
         }
         else{
           noNote.html("you haven't complete any task");
           noNote.show();
-          ui.clearNotes();
+           clearNotes();
         }
        
       });
@@ -355,9 +334,9 @@
       ACTIVETASKS.click(function(){
         if(ActiveNote.size > 0 ){
           noNote.hide();
-          ui.ClearALLNotes();
+           ClearALLNotes();
           ActiveNote.forEach(function (value , key){
-          ui.DisplayMultieNotes(value, key);
+           DisplayMultieNotes(value, key);
         })
         }
         else{
@@ -368,12 +347,12 @@
           }
          
           noNote.show();
-          ui.clearNotes();
+           clearNotes();
         }
       });
 
       DELETALL.click(function(){
-        ui.clearNotes();
+         clearNotes();
         noNote.html("No note for now");
         itemLeft = 10;
         $('#left').html(`Empty list`)
