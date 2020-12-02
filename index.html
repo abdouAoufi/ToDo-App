@@ -31,8 +31,7 @@
           <div class="done" id="saveNote">
             <img src="images/icon-check.svg" alt="">
           </div>
-          <input type="text" name="" id="entry" placeholder="Tape here
-            to create">
+          <input type="text" name="" id="entry" placeholder="Tape here to create">
         </div>
 
         <div class="todo-container">
@@ -188,7 +187,7 @@
       noteContainer.append(nota);
       
       $('.check').on("click" , function(){
-        // $(this).next().toggleClass('line-through');
+        $(this).next().toggleClass('line-through');
         let id = parseInt($(this).parent().attr("id"),10);
         $(this).addClass('active');
         value.isCHecked = true;
@@ -204,7 +203,7 @@
         ActiveNote.delete(id);
         $(this).parent().remove();
         if(allNotes.size == 0){
-          noNote.html("Type above to add task");
+          noNote.html("Tape above to add task");
           noNote.show();
         }
         itemLeft = ActiveNote.size ;
